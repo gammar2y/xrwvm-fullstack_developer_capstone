@@ -11,6 +11,7 @@ function App() {
       <Route path="/register" element={<Register_panel />}> </Route>
       <Route path="/dealers" element={<Dealers/>} />
       <Route path="/dealer/:id" element={<Dealer/>} />
+      <Route path="/postreview/:id" element={<PostReview/>} />
           </Routes>
   );
 }
