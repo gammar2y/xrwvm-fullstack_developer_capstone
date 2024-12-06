@@ -4,11 +4,9 @@ Views for the djangoapp application.
 
 import logging
 import json
-from datetime import datetime
-from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import logout as auth_logout, login, authenticate
+from django.contrib.auth import logout as login, authenticate
 from django.views.decorators.csrf import csrf_exempt
 from .models import CarMake, CarModel
 from .populate import initiate
@@ -71,7 +69,9 @@ def registration(request):
 
     try:
         User.objects.get(username=username)
-        return JsonResponse({"userName": username, "error": "Already Registered"})
+        return JsonResponse(
+            {"userName": username, "error": "Already Registered"}
+        )
     except User.DoesNotExist:
         user = User.objects.create_user(
             username=username, first_name=first_name,
@@ -125,5 +125,7 @@ def add_review(request):
             post_review(data)
             return JsonResponse({"status": 200})
         except Exception:
-            return JsonResponse({"status": 401, "message": "Error in posting review"})
+            return JsonResponse(
+                {"status": 401, "message": "Error in posting review"}
+            )
     return JsonResponse({"status": 403, "message": "Unauthorized"})
