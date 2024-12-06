@@ -17,6 +17,7 @@ from .restapis import get_request, analyze_review_sentiments, post_review
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
+
 def get_cars(request):
     """
     Retrieves car models and their makes.
@@ -25,8 +26,12 @@ def get_cars(request):
     if count == 0:
         initiate()
     car_models = CarModel.objects.select_related('car_make')
-    cars = [{"CarModel": car_model.name, "CarMake": car_model.car_make.name} for car_model in car_models]
+    cars = [
+        {"CarModel": car_model.name, "CarMake": car_model.car_make.name}
+        for car_model in car_models
+    ]
     return JsonResponse({"CarModels": cars})
+
 
 @csrf_exempt
 def login_user(request):
@@ -43,12 +48,14 @@ def login_user(request):
         response_data["status"] = "Authenticated"
     return JsonResponse(response_data)
 
+
 def logout(request):
     """
     Handles user logout.
     """
     data = {"userName": ""}
     return JsonResponse(data)
+
 
 @csrf_exempt
 def registration(request):
@@ -61,14 +68,18 @@ def registration(request):
     first_name = data['firstName']
     last_name = data['lastName']
     email = data['email']
-    
+
     try:
         User.objects.get(username=username)
         return JsonResponse({"userName": username, "error": "Already Registered"})
     except User.DoesNotExist:
-        user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, password=password, email=email)
+        user = User.objects.create_user(
+            username=username, first_name=first_name,
+            last_name=last_name, password=password, email=email
+        )
         login(request, user)
         return JsonResponse({"userName": username, "status": "Authenticated"})
+
 
 def get_dealerships(request, state="All"):
     """
@@ -77,6 +88,7 @@ def get_dealerships(request, state="All"):
     endpoint = "/fetchDealers" if state == "All" else f"/fetchDealers/{state}"
     dealerships = get_request(endpoint)
     return JsonResponse({"status": 200, "dealers": dealerships})
+
 
 def get_dealer_reviews(request, dealer_id):
     """
@@ -91,6 +103,7 @@ def get_dealer_reviews(request, dealer_id):
         return JsonResponse({"status": 200, "reviews": reviews})
     return JsonResponse({"status": 400, "message": "Bad Request"})
 
+
 def get_dealer_details(request, dealer_id):
     """
     Retrieves details of a specific dealer.
@@ -100,6 +113,7 @@ def get_dealer_details(request, dealer_id):
         dealership = get_request(endpoint)
         return JsonResponse({"status": 200, "dealer": dealership})
     return JsonResponse({"status": 400, "message": "Bad Request"})
+
 
 def add_review(request):
     """
